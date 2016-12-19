@@ -1,7 +1,7 @@
 Package: satchel
 Type: Package
 Title: carry around your data 
-Version: 0.1.0
+Version: 0.0.1
 Authors@R: c(
     person("Devin", "Pastoor",
     email = "devin.pastoor@gmail.com", role = c("aut", "cre")))
@@ -9,6 +9,8 @@ Description: carry around your data to wherever it needs to go
 Depends:
     R (>= 3.3.0)
 Imports:
+    dplyr,
+    pryr,
     R6
 Suggests:
     testthat
