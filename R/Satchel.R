@@ -7,7 +7,7 @@
 NULL
 
 #' @export
-Satchel <- R6Class("Satchel",
+Satchel <- R6::R6Class("Satchel",
                     public =
                         list(
                             verbose = NULL,
@@ -67,7 +67,7 @@ Satchel <- R6Class("Satchel",
                                     message("automatic gitignore management not yet implemented, sorry!")
                                 }
                             },
-                            save = function(data, data_name = NULL) {
+                            save = function(data, data_name = NULL, metadata = TRUE) {
                                 if (is.null(data_name)) {
                                     data_name <- deparse(substitute(data))
                                 }
@@ -78,13 +78,28 @@ Satchel <- R6Class("Satchel",
                                         return(TRUE)
                                     }
                                 }
-                                saveRDS(data, file.path(private$cache_location, data_name))
-                                private$data[[data_name]] <<- tibble::data_frame(
+                                saveRDS(data, file.path(private$cache_location, paste0(data_name, ".rds")))
+                                info <- tibble::data_frame(
                                     name = data_name,
                                     classes = paste0(class(data), collapse = ", "),
                                     size = pryr::object_size(data),
                                     mem_address = pryr::address(data)
                                 )
+                                private$data[[data_name]] <<- info
+                                if (metadata) {
+                                    # info with class bytes is not able to be parsed by json
+                                    # so will coerce to numeric so the bytes representation will be stored
+                                    info$size <- as.numeric(info$size)
+                                    # don't need memory address as won't convey any additional information
+                                    info$mem_address <- NULL
+                                    writeLines(jsonlite::toJSON(list("info" = info,
+                                                          "preview" = head(data),
+                                                          "time" = Sys.time()),
+                                                          pretty = T
+                                                     ),
+                                             file.path(private$cache_location, paste0(data_name, "_meta.json"))
+                                    )
+                                }
 
                             },
                             use = function(data_name) {
