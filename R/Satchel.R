@@ -1,6 +1,8 @@
 #' Carry around your data
 #' @importFrom R6 R6Class
 #' @name Satchel
+#' @details
+#'
 #' @examples
 #' \dontrun{
 #' }
@@ -82,14 +84,11 @@ Satchel <- R6::R6Class("Satchel",
                                 info <- tibble::data_frame(
                                     name = data_name,
                                     classes = paste0(class(data), collapse = ", "),
-                                    size = pryr::object_size(data),
+                                    size_mb = as.numeric(pryr::object_size(data))/1000000,
                                     mem_address = pryr::address(data)
                                 )
                                 private$data[[data_name]] <<- info
                                 if (metadata) {
-                                    # info with class bytes is not able to be parsed by json
-                                    # so will coerce to numeric so the bytes representation will be stored
-                                    info$size <- as.numeric(info$size)
                                     # don't need memory address as won't convey any additional information
                                     info$mem_address <- NULL
                                     writeLines(jsonlite::toJSON(list("info" = info,
@@ -110,12 +109,13 @@ Satchel <- R6::R6Class("Satchel",
                                 data <- TRUE # to implement fetching from tree
                                 return(data)
                                 },
-                            report = function(details = FALSE) {
+                            report = function(details = TRUE) {
                                 if (details) {
                                     lapply(private$data, dplyr::glimpse)
                                 } else {
-                                    names(private$data)
+                                    lapply(names(private$data), print)
                                 }
+                                return(invisible())
 
                             }
                         ),
