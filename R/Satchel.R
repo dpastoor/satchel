@@ -2,10 +2,14 @@
 #' @importFrom R6 R6Class
 #' @name Satchel
 #' @details
+#' methods:
 #'
-#' @examples
-#' \dontrun{
-#' }
+#' * save(data, data_name) - save data
+#' * use(data_name) - use data saved from a different location
+#' * report() - show information about all data saved in current session
+#' * list() - list all data in the satchel cache directory
+#' * peek(data_dir, data_name) - shows the (approximate) head of a dataset from the output metadata
+#'
 NULL
 
 #' @export
@@ -101,12 +105,35 @@ Satchel <- R6::R6Class("Satchel",
                                 }
 
                             },
-                            use = function(data_name) {
+                            use = function(data_name, from = NULL) {
                                 if (is.numeric(data_name)) {
                                     warning("be careful referencing models by index as changes could result in subtle bugs,
                                             suggest referring to datasets by name")
                                 }
-                                data <- TRUE # to implement fetching from tree
+                                if (!is.null(from)) {
+                                    # check if from exists as will error otherwise
+                                    if (!from %in% names(private$references)) {
+                                        stop("no `from` location detected in available data locations")
+                                    }
+                                }
+
+                                if(is.null(from)) {
+                                    references <- private$references
+                                } else {
+                                    references <- private$references[[from]]
+                                }
+
+                                all_objects <- lapply(references, function(.n) {
+                                    gsub("\\.rds", "", basename(.n))
+                                })
+                                obj_matches <- which(data_name == unlist(all_objects))
+                                if (!length(obj_matches)) {
+                                    stop("could not find any matching objects")
+                                }
+                                if(length(obj_matches) > 1 && is.null(from)) {
+                                    stop("multiple matches found, please specify where the data was specified as well")
+                                }
+                                data <- readRDS(unlist(references)[obj_matches])
                                 return(data)
                                 },
                             report = function(details = TRUE) {
@@ -117,12 +144,29 @@ Satchel <- R6::R6Class("Satchel",
                                 }
                                 return(invisible())
 
+                            },
+                            available = function() {
+                                dirs <- list.dirs(private$dir, recursive = F)
+                                # drop system folders that start with . and normalize paths
+                                dirs <- unlist(lapply(dirs, function(.d) {
+                                    if (grepl( "^\\.", basename(.d))) {
+                                        return(NULL)
+                                    }
+                                    return(normalizePath(.d))
+                                }))
+                                references <- lapply(dirs, function(.d) {
+                                    normalizePath(file.path(.d, list.files(.d, pattern = "*.rds")))
+                                })
+                                private$references <<- setNames(references, basename(dirs))
+                                return(lapply(private$references, function(.n) {
+                                    gsub("\\.rds", "", basename(.n))
+                                }))
                             }
                         ),
                     private = list(
                         dir = NULL,
                         cache_location = NULL,
-                        data = list()
-
+                        data = list(),
+                        references = list()
                     )
 )
