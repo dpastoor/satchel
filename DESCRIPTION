@@ -10,10 +10,11 @@ Depends:
     R (>= 3.3.0)
 Imports:
     dplyr,
+    jsonlite,
     pryr,
     R6
 Suggests:
     testthat
 License: MIT + file LICENSE
 VignetteBuilder: knitr
-RoxygenNote: 5.0.1
+RoxygenNote: 5.0.1.9000
