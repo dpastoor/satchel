@@ -6,8 +6,38 @@
 \description{
 Carry around your data
 }
+\details{
+methods:
+\itemize{
+\item save(data, data_name) - save data
+\item use(data_name) - use data saved from a different location
+\item report() - show information about all data saved in current session
+\item details() - list all data in the satchel cache directory
+\item peek(data_dir, data_name) - shows the (approximate) head of a dataset from the output metadata
+}
+}
 \examples{
 \dontrun{
-}
-}
+# create a new satchel stored as namespace f1 in the dir data/derived
+satchel <- Satchel$new("f1", "../data/derived/satchel")
+satchel$save(Theoph)
+# new file at ../data/derived/satchel/f1/Theoph.rds
 
+# we can also give the files other names
+satchel$save(Theoph, data_name = "other")
+satchel$save(Theoph, data_name = "another")
+
+# to see all objects saved during the session can check the report
+satchel$report(details = T)
+
+# can see data from any satchel dir by checking what is available
+satchel$available()
+
+# lets say in another file I had saved a file nca_summaries in an nca_analysis namespace
+# satchel is smart enough to scan all folders for that file
+nca_summaries <- satchel$use("nca_summaries")
+
+# if it finds a conflict, you must explicitly specify which namespace it was saved under
+nca_summaries <- satchel$use("nca_summaries", "nca_analysis")
+}
+}
