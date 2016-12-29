@@ -8,6 +8,8 @@ Authors@R: c(
 Description: carry around your data to wherever it needs to go
 Depends:
     R (>= 3.3.0)
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 5.0.1.9000
 Imports:
     dplyr,
     jsonlite,
@@ -17,4 +19,3 @@ Suggests:
     testthat
 License: MIT + file LICENSE
 VignetteBuilder: knitr
-RoxygenNote: 5.0.1.9000
