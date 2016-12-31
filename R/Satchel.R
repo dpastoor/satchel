@@ -31,6 +31,7 @@
 #' nca_summaries <- satchel$use("nca_summaries", "nca_analysis")
 #' }
 #' @importFrom R6 R6Class
+#' @importFrom jsonlite serializeJSON unserializeJSON toJSON fromJSON
 #' @name Satchel
 NULL
 
@@ -117,11 +118,45 @@ Satchel <- R6::R6Class("Satchel",
                                 if (metadata) {
                                     # don't need memory address as won't convey any additional information
                                     info$mem_address <- NULL
-                                    writeLines(jsonlite::toJSON(list("info" = info,
-                                                          "preview" = head(data),
-                                                          "time" = Sys.time()),
-                                                          pretty = T
-                                                     ),
+
+                                    is_likely_data <- any(purrr::map_lgl(class(data), function(x) {
+                                        c("head") %in% gsub(paste0(".", x), "", as.character(methods(class = x)))
+                                    }))
+
+                                    if (is_likely_data) {
+                                        output <- tryCatch({
+                                            jsonlite::toJSON(list("info" = info,
+                                                              "json_preview" = head(data),
+                                                              "r_preview" = serializeJSON(head(data)),
+                                                              "time" = Sys.time()),
+                                                              pretty = T
+                                                         )
+                                        }, error = function(e) {
+                                            jsonlite::toJSON(list("info" = info,
+                                                              "json_preview" = e$message,
+                                                              "r_preview" = serializeJSON(e$message),
+                                                              "time" = Sys.time()),
+                                                              pretty = T
+                                                         )
+                                        })
+                                    } else {
+                                        output <- tryCatch({
+                                            jsonlite::toJSON(list("info" = info,
+                                                              "json_preview" = "data type likely unsuitable for preview",
+                                                              "r_preview" = serializeJSON("data type likely unsuitable for preview"),
+                                                              "time" = Sys.time()),
+                                                              pretty = T
+                                                         )
+                                        }, error = function(e) {
+                                            jsonlite::toJSON(list("info" = info,
+                                                              "json_preview" = e$message,
+                                                              "r_preview" = serializeJSON(e$message),
+                                                              "time" = Sys.time()),
+                                                              pretty = T
+                                                         )
+                                        })
+                                    }
+                                    writeLines(output,
                                              file.path(private$cache_location, paste0(data_name, "_meta.json"))
                                     )
                                 }
