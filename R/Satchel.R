@@ -29,6 +29,8 @@
 #'
 #' # if it finds a conflict, you must explicitly specify which namespace it was saved under
 #' nca_summaries <- satchel$use("nca_summaries", "nca_analysis")
+#'
+#'
 #' }
 #' @importFrom R6 R6Class
 #' @importFrom jsonlite serializeJSON unserializeJSON toJSON fromJSON
@@ -41,15 +43,18 @@ Satchel <- R6::R6Class("Satchel",
                         list(
                             verbose = NULL,
                             track = NULL,
+                            refresh = NULL,
                             initialize = function(
                                 cache_name,
                                 dir = NULL, # where model files should be stored
                                 track = FALSE,
                                 verbose = TRUE,
-                                strict = TRUE
+                                strict = TRUE,
+                                refresh = TRUE
                             ) {
                                 self$verbose <<- verbose
                                 self$track <<- track
+                                self$refresh <<- refresh
                                 ## cache folder set to same directory as the sourced script
                                 if (is.null(dir)) {
                                     if (strict) {
@@ -171,6 +176,9 @@ Satchel <- R6::R6Class("Satchel",
 
                             },
                             use = function(data_name, from = NULL) {
+                                if (self$refresh) {
+                                    self$available()
+                                }
                                 if (is.numeric(data_name)) {
                                     warning("be careful referencing models by index as changes could result in subtle bugs,
                                             suggest referring to datasets by name")
@@ -226,6 +234,12 @@ Satchel <- R6::R6Class("Satchel",
                                 return(lapply(private$references, function(.n) {
                                     gsub("\\.rds", "", basename(.n))
                                 }))
+                            },
+                            auto_refresh = function(.refresh) {
+                                if(!missing(.refresh)) {
+                                    self$refresh <<- .refresh
+                                }
+                                return(self$refresh)
                             }
                         ),
                     private = list(
