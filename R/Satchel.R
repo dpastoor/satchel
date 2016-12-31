@@ -242,6 +242,46 @@ Satchel <- R6::R6Class("Satchel",
                                     self$refresh <<- .refresh
                                 }
                                 return(self$refresh)
+                            },
+                            preview = function(data_name, from = NULL) {
+                                ## this is currently copied and pasted from use() this should be refactored!
+                                if (self$refresh) {
+                                    self$available()
+                                }
+                                if (is.numeric(data_name)) {
+                                    warning("be careful referencing models by index as changes could result in subtle bugs,
+                                            suggest referring to datasets by name")
+                                }
+                                if (!is.null(from)) {
+                                    # check if from exists as will error otherwise
+                                    if (!from %in% names(private$references)) {
+                                        stop("no `from` location detected in available data locations")
+                                    }
+                                }
+
+                                if(is.null(from)) {
+                                    references <- private$references
+                                } else {
+                                    references <- private$references[[from]]
+                                }
+
+                                all_objects <- lapply(references, function(.n) {
+                                    gsub("\\.rds", "", basename(.n))
+                                })
+                                obj_matches <- which(data_name == unlist(all_objects))
+                                if (!length(obj_matches)) {
+                                    stop("could not find any matching objects")
+                                }
+                                if(length(obj_matches) > 1 && is.null(from)) {
+                                    stop("multiple matches found, please specify where the data was specified as well")
+                                }
+                                meta_data_file <- gsub("\\.rds", "_meta.json", unlist(references)[obj_matches])
+                                if (!file.exists(meta_data_file)) {
+                                    warning("could not find a metadata file at: ", meta_data_file)
+                                    return(FALSE)
+                                }
+                                data <- fromJSON(readr::read_file(meta_data_file))
+                                return(unserializeJSON(data$r_preview))
                             }
                         ),
                     private = list(
