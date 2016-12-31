@@ -22,7 +22,7 @@ should occur once, and the intermediate object be shared to the other files. Thi
 so any future modifications will be properly propogated to all other instances.
 
 Second, an 'elephant in the room' of literate programming, is the the progression of a project does not proceed in
-a straight line, instead more like: ![success](assets/success.jpeg)
+a straight line, instead more like: ![success](assets/success.jpg)
 
 The total progression should be tracked in the `lab-notebook` to document false leads etc. 
 When trying to create a final report though, only specific components will be retained. 
