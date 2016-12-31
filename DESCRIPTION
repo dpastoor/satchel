@@ -1,7 +1,7 @@
 Package: satchel
 Type: Package
 Title: carry around your data 
-Version: 0.0.1
+Version: 0.0.2
 RoxygenNote: 5.0.1.9000
 Roxygen: list(markdown = TRUE)
 Authors@R: c(
