@@ -2,3 +2,7 @@
 
 export(Satchel)
 importFrom(R6,R6Class)
+importFrom(jsonlite,fromJSON)
+importFrom(jsonlite,serializeJSON)
+importFrom(jsonlite,toJSON)
+importFrom(jsonlite,unserializeJSON)
