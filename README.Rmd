@@ -1,0 +1,7 @@
+Satchel
+===========
+
+Carry around your data
+
+
+See a project example in action at [satchel_examples](https://github.com/dpastoor/satchel_examples)
