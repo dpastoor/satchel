@@ -131,10 +131,12 @@ Satchel <- R6::R6Class("Satchel",
                                 if (metadata) {
                                     # don't need memory address as won't convey any additional information
                                     info$mem_address <- NULL
-
-                                    is_likely_data <- any(purrr::map_lgl(class(data), function(x) {
-                                        c("head") %in% gsub(paste0(".", x), "", as.character(methods(class = x)))
-                                    }))
+                                    data_classes <- c(
+                                        "tbl_df",
+                                        "data.frame",
+                                        "matrix"
+                                    )
+                                    is_likely_data <- any(class(data) %in% data_classes) || is.vector(data)
 
                                     if (is_likely_data) {
                                         output <- tryCatch({
