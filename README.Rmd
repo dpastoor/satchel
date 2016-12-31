@@ -11,6 +11,7 @@ See a project example in action at [satchel_examples](https://github.com/dpastoo
 The driving factor behind satchel is helping to solve two issues that become more and more painful as projects get larger: 
 
 1) a project should be split into multiple files to keep knit times manageable and a semblance of organization. This fits nicely with [bookdown](https://github.com/rstudio/bookdown) as a mechanism for organizing Rmd's.
+
 2) Reproducible research should strive to keep code embedded in reports
 
 #### How does `satchel` mitigate these pain points?
@@ -47,7 +48,8 @@ satchel <- Satchel$new("<namespace>", "<path/to/satchel/tree>")
 ```
 
 
-The resulting object can have any name
+The resulting object can have any name, though the convention is to use `satchel` 
+if only creating one, and `satchel_<additional_identifier>` if using multiple in a single file
 
 ```{r eval = F}
 other_name <- Satchel$new("<namespace>", "<path/to/satchel/tree>")
@@ -150,6 +152,13 @@ satchel$preview("safety_data")
 ```
 
 As this does not need to pull in the entire file, access will be fast and light on memory.
+
+## Patterns
+
+### saving all files in a folder into a satchel
+
+TODO
+
 
 ## Advanced
 
