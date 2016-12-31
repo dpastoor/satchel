@@ -108,10 +108,18 @@ Satchel <- R6::R6Class("Satchel",
                                     }
                                 }
                                 saveRDS(data, file.path(private$cache_location, paste0(data_name, ".rds")))
+                                size_mb <- tryCatch({
+                                        # try to use pryr if possible, however some types like ggplot
+                                        # do not work so can fall back to object.size if this errors
+                                        as.numeric(pryr::object_size(data))/1000000
+                                    },
+                                    error = function(e) {
+                                        as.numeric(object.size(data))/1000000
+                                    })
                                 info <- tibble::data_frame(
                                     name = data_name,
                                     classes = paste0(class(data), collapse = ", "),
-                                    size_mb = as.numeric(pryr::object_size(data))/1000000,
+                                    size_mb = size_mb,
                                     mem_address = pryr::address(data)
                                 )
                                 private$data[[data_name]] <<- info
