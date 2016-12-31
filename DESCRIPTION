@@ -2,14 +2,14 @@ Package: satchel
 Type: Package
 Title: carry around your data 
 Version: 0.0.1
+RoxygenNote: 5.0.1.9000
+Roxygen: list(markdown = TRUE)
 Authors@R: c(
-    person("Devin", "Pastoor",
-    email = "devin.pastoor@gmail.com", role = c("aut", "cre")))
+    person("Devin", "Pastoor", ,"devin.pastoor@gmail.com", role = c("aut", "cre"))
+    )
 Description: carry around your data to wherever it needs to go
 Depends:
     R (>= 3.3.0)
-Roxygen: list(markdown = TRUE)
-RoxygenNote: 5.0.1.9000
 Imports:
     dplyr,
     jsonlite,
