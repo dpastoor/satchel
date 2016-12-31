@@ -5,3 +5,22 @@ Carry around your data
 
 
 See a project example in action at [satchel_examples](https://github.com/dpastoor/satchel_examples)
+
+## access behavior
+
+when 'using' an object, the default behavior is to re-scan the satchel tree to make
+sure the object is available and current. This is especially important if using multiple satchel's concurrently, when new objects are generated after another is initialized, it may not be aware of those updates. This continual scanning may not be ideal if the desire is to load a number of 
+objects on after another (for example, pulling in a bunch to a list). To manually control the behavior, you can turn off refreshing via
+
+```
+satchel$auto_refresh(FALSE) 
+satchel$available() # manually query the tree to update it
+satchel$use(...)
+satchel$use(...)
+satchel$use(...)
+satchel$use(...)
+satchel$auto_refresh(TRUE) # turn auto-refresh back on
+
+```
+
+Then you must manually call
