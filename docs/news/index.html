@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Authors • satchel</title>
+<title>All news • satchel</title>
 
 <!-- jquery -->
 <script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha384-nrOSfDHtoPMzJHjVTdCopGqIqeYETSXhZDFyniQ8ZHcVy08QesyHcnOUpMpqnmWq" crossorigin="anonymous"></script>
@@ -20,9 +20,9 @@
 
 
 <!-- pkgdown -->
-<link href="pkgdown.css" rel="stylesheet">
-<script src="jquery.sticky-kit.min.js"></script>
-<script src="pkgdown.js"></script>
+<link href="../pkgdown.css" rel="stylesheet">
+<script src="../jquery.sticky-kit.min.js"></script>
+<script src="../pkgdown.js"></script>
 
 <!-- mathjax -->
 <script src='https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML'></script>
@@ -34,7 +34,7 @@
   </head>
 
   <body>
-    <div class="container template-authors">
+    <div class="container template-news">
       <header>
       <div class="navbar navbar-default navbar-fixed-top" role="navigation">
   <div class="container">
@@ -44,15 +44,15 @@
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
       </button>
-      <a class="navbar-brand" href="index.html">satchel</a>
+      <a class="navbar-brand" href="../index.html">satchel</a>
     </div>
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
         <li>
-  <a href="reference/index.html">Reference</a>
+  <a href="../reference/index.html">Reference</a>
 </li>
 <li>
-  <a href="news/index.html">News</a>
+  <a href="../news/index.html">News</a>
 </li>
       </ul>
       
@@ -67,22 +67,36 @@
       </header>
 
       <div class="row">
-  <div class="contents col-md-12">
+
+  <div class="col-md-9">
     <div class="page-header">
-      <h1>Authors</h1>
+      <h1>Change log <small>All releases</small></h1>
     </div>
 
-    <ul class="list-unstyled">
-      <li>
-        <p><strong>Devin Pastoor</strong>. Author, maintainer.
-        </p>
-      </li>
-    </ul>
+    <div class="contents">
+    <div id="satchel-0-0-2" class="section level1">
+<h1 class="hasAnchor">
+<a href="#satchel-0-0-2" class="anchor"> </a>satchel 0.0.2</h1>
+<ul><li>update metadata to both have a json preview and serialize to an r_preview that retains attributes and class information</li>
+<li>metadata will naively handle types that are not convertable to JSON (eg ggplot objects) or objects that it cannot introspect with a reasonable way of truncating (eg lists)</li>
+<li>
+<code>preview()</code> method implemented to show preview from stored metadata</li>
+<li>
+<code>auto_refresh(&lt;bool&gt;)</code> method implemented to make sure the satchel data tree is current when <code>use</code>-ing or <code>preview</code>ing data.</li>
+</ul></div>
+    </div>
+  </div>
 
+  <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
+    <div id="tocnav">
+      <h2>Contents</h2>
+      <ul class="nav nav-pills nav-stacked">
+        <li><a href="#satchel-0-0-2">0.0.2</a></li>
+      </ul>
+    </div>
   </div>
 
 </div>
-
 
       <footer>
       <div class="copyright">
