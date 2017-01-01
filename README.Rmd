@@ -57,7 +57,7 @@ other_name <- Satchel$new("<namespace>", "<path/to/satchel/tree>")
 
 Multiple satchel nodes can be created in a single file
 
-```{r}
+```{r eval=FALSE}
 library(satchel)
 
 satchel_data <- Satchel$new("<namespace>", "<path/to/satchel/tree>")
@@ -76,7 +76,7 @@ satchel$save(<obj>)
 satchel$save(<obj>, data_name = "<other name>")
 ```
 
-```{r}
+```{r eval=FALSE}
 satchel$save(Theoph) # will be saved as Theoph
 satchel$save(Theoph, "pk_theoph") # will be saved as pk_theoph
 ```
@@ -94,7 +94,7 @@ Theoph %>% mutate(REP = 1) %>% satchel$save("Theoph")
 
 At the end of an Rmarkdown file, you can get the information for all saved object during the session
 
-```{r}
+```{r eval=FALSE}
 satchel$report()
 ```
 
@@ -112,7 +112,7 @@ satchel$save(safety_data)
 
 In the new file, the safety_data could be acquired via:
 
-```{r}
+```{r eval=FALSE}
 satchel <- Satchel$new("analysis", "satchel")
 ...
 safety_data <- satchel$use("safety_data")
@@ -133,7 +133,7 @@ satchel$save(safety_data)
 As `safety_data` is present in both `safety` and `other_safety` namespaces, to use it you must specify 
 which namespace you want to refer to:
 
-```{r}
+```{r eval=FALSE}
 safety_data <- satchel$use("safety_data", "safety")
 ```
 
@@ -147,7 +147,7 @@ the entire object, especially when dealing with larger datasets.
 `Satchel` automatically keeps a `head()` of certain objects (dataframes, matrices, vectors) so that they can be
 previewed, rather than pulling in the entire object.
 
-```{r}
+```{r eval=FALSE}
 satchel$preview("safety_data")
 ```
 
