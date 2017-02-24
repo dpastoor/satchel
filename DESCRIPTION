@@ -1,8 +1,8 @@
 Package: satchel
 Type: Package
 Title: carry around your data 
-Version: 0.0.2
-RoxygenNote: 5.0.1.9000
+Version: 0.0.3
+RoxygenNote: 6.0.1
 Roxygen: list(markdown = TRUE)
 Authors@R: c(
     person("Devin", "Pastoor", ,"devin.pastoor@gmail.com", role = c("aut", "cre"))
