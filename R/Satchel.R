@@ -46,7 +46,7 @@ Satchel <- R6::R6Class("Satchel",
                             refresh = NULL,
                             initialize = function(
                                 cache_name,
-                                dir = NULL, # where model files should be stored
+                                dir = NULL,
                                 track = FALSE,
                                 verbose = TRUE,
                                 strict = TRUE,
@@ -55,7 +55,6 @@ Satchel <- R6::R6Class("Satchel",
                                 self$verbose <<- verbose
                                 self$track <<- track
                                 self$refresh <<- refresh
-                                ## cache folder set to same directory as the sourced script
                                 if (is.null(dir)) {
                                     if (strict) {
                                         stop("strict mode on - must explicitly declare the directory to store the cache")
