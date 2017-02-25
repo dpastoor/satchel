@@ -177,7 +177,7 @@ Satchel <- R6::R6Class("Satchel",
                                 }
 
                             },
-                            load_from_file = function(path, .f, data_name = NULL) {
+                            load_from_file = function(path, .f, ..., data_name = NULL) {
                                 # check path exists
                                 fullpath <- normalizePath(path)
                                 if (!file.exists(fullpath)) {
@@ -202,7 +202,7 @@ Satchel <- R6::R6Class("Satchel",
                                 }
 
                                 data <- tryCatch({
-                                    .f(path)
+                                    .f(path, ...)
                                 }, error = function(e) {
                                     stop(paste("error reading data:", e))
                                 })
