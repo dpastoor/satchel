@@ -190,15 +190,16 @@ Satchel <- R6::R6Class("Satchel",
                                 meta_filepath <- file.path(private$cache_location, paste0(data_name, "_meta.json"))
                                 file_info <- file.info(fullpath)
 
-                                # file exists, lets see if modification times match
-                                old_meta <- read_json(meta_filepath)
-                                # unfortunately due to the way the list is converted back from json
-                                # the info and fileinfo arrays are converted to be wrapped with a list
-                                # of length 1, so need to also reference into the list each time
-                                old_file_info <- old_meta$info[[1]]$fileinfo[[1]]
-                                if (old_file_info$mtime == file_info$mtime) {
-                                    message("file already in cache, loading from cache!")
-                                    return(readRDS(rds_name))
+                                if (file.exists(meta_filepath)) {
+                                    old_meta <- jsonlite::read_json(meta_filepath)
+                                    # unfortunately due to the way the list is converted back from json
+                                    # the info and fileinfo arrays are converted to be wrapped with a list
+                                    # of length 1, so need to also reference into the list each time
+                                    old_file_info <- old_meta$info[[1]]$fileinfo[[1]]
+                                    if (old_file_info$mtime == file_info$mtime) {
+                                        message("file already in cache, loading from cache!")
+                                        return(readRDS(rds_name))
+                                    }
                                 }
 
                                 data <- tryCatch({
@@ -251,7 +252,8 @@ Satchel <- R6::R6Class("Satchel",
                                     writeLines(output,
                                              file.path(private$cache_location, paste0(data_name, "_meta.json"))
                                     )
-                                }
+                                    }
+                                    return(data)
 
                             },
                             use = function(data_name, from = NULL) {
