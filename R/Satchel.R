@@ -177,6 +177,85 @@ Satchel <- R6::R6Class("Satchel",
                                 }
 
                             },
+                             save_from_file = function(path, .f, ..., data_name = NULL) {
+                                # check path exists
+                                fullpath <- normalizePath(path)
+                                if (!file.exists(fullpath)) {
+                                    stop(paste("no file detected at:", fullpath))
+                                }
+                                if (is.null(data_name)) {
+                                    data_name <- tools::file_path_sans_ext(basename(path))
+                                }
+                                rds_name <- file.path(private$cache_location, paste0(data_name, ".rds"))
+                                meta_filepath <- file.path(private$cache_location, paste0(data_name, "_meta.json"))
+                                file_info <- file.info(fullpath)
+
+                                if (file.exists(meta_filepath)) {
+                                    old_meta <- jsonlite::read_json(meta_filepath)
+                                    # unfortunately due to the way the list is converted back from json
+                                    # the info and fileinfo arrays are converted to be wrapped with a list
+                                    # of length 1, so need to also reference into the list each time
+                                    old_file_info <- old_meta$info[[1]]$fileinfo[[1]]
+                                    if (old_file_info$mtime == file_info$mtime) {
+                                        message("file already in cache")
+                                        return(FALSE)
+                                    }
+                                }
+
+                                data <- tryCatch({
+                                    .f(path, ...)
+                                }, error = function(e) {
+                                    stop(paste("error reading data:", e))
+                                })
+                                saveRDS(data, file.path(private$cache_location, paste0(data_name, ".rds")))
+                                size_mb <- tryCatch({
+                                        # try to use pryr if possible, however some types like ggplot
+                                        # do not work so can fall back to object.size if this errors
+                                        as.numeric(pryr::object_size(data))/1000000
+                                    },
+                                    error = function(e) {
+                                        as.numeric(object.size(data))/1000000
+                                    })
+                                info <- tibble::data_frame(
+                                    name = data_name,
+                                    classes = paste0(class(data), collapse = ", "),
+                                    size_mb = size_mb,
+                                    type = "file",
+                                    fileinfo = list(fileinfo= file.info(fullpath)[c("mtime", "ctime", "size")])
+                                )
+                                private$data[[data_name]] <<- info
+                                    # don't need memory address as won't convey any additional information
+                                    data_classes <- c(
+                                        "tbl_df",
+                                        "data.frame",
+                                        "matrix"
+                                    )
+                                    is_likely_data <- any(class(data) %in% data_classes) || is.vector(data)
+
+                                    if (is_likely_data) {
+                                        output <- tryCatch({
+                                            jsonlite::toJSON(list("info" = info,
+                                                              "json_preview" = head(data),
+                                                              "r_preview" = serializeJSON(head(data)),
+                                                              "time" = Sys.time()),
+                                                              pretty = T
+                                                         )
+                                        }, error = function(e) {
+                                            jsonlite::toJSON(list("info" = info,
+                                                              "json_preview" = e$message,
+                                                              "r_preview" = serializeJSON(e$message),
+                                                              "time" = Sys.time()),
+                                                              pretty = T
+                                                         )
+                                        })
+
+                                    writeLines(output,
+                                             file.path(private$cache_location, paste0(data_name, "_meta.json"))
+                                    )
+                                    }
+                                    return(TRUE)
+
+                            },
                             load_from_file = function(path, .f, ..., data_name = NULL) {
                                 # check path exists
                                 fullpath <- normalizePath(path)
