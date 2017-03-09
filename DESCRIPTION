@@ -9,7 +9,7 @@ Authors@R: c(
     )
 Description: carry around your data to wherever it needs to go
 Depends:
-    R (>= 3.3.0)
+    R (>= 3.2.2)
 Imports:
     dplyr,
     jsonlite,
