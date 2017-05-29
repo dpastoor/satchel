@@ -1,6 +1,8 @@
 Satchel
 ===========
 
+[![Travis build status](https://travis-ci.org/dpastoor///satchel.svg?branch=master)](https://travis-ci.org/dpastoor///satchel)
+
 Carry around your data
 
 
