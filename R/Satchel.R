@@ -39,51 +39,6 @@ NULL
 
 #' @export
 Satchel <- R6::R6Class("Satchel",
-<<<<<<< HEAD
-    public =
-       list(
-           verbose = NULL,
-           track = NULL,
-           refresh = NULL,
-           initialize = function(
-               cache_name,
-               dir = NULL, # where model files should be stored
-               track = FALSE,
-               verbose = TRUE,
-               strict = TRUE,
-               refresh = TRUE
-           ) {
-               self$verbose <<- verbose
-               self$track <<- track
-               self$refresh <<- refresh
-               ## cache folder set to same directory as the sourced script
-               if (is.null(dir)) {
-                   if (strict) {
-                       stop("strict mode on - must explicitly declare the directory to store the cache")
-                   }
-                   dir <- getwd()
-               }
-               dir <- normalizePath(dir, mustWork = FALSE)
-               if (strict) {
-                   # if they are 'manually' setting a modeling dir, make sure it exists
-                   if (!dir.exists(dir)) {
-                       stop(
-                           paste(
-                               "no directory detected at: ",
-                               dir,
-                               "please correct the path or create the folder"
-                           )
-                       )
-                   }
-               } else {
-                   if (!dir.exists(dir)) {
-                       dir.create(dir, recursive = TRUE)
-                       if (self$verbose) {
-                           message(paste("parent directory created at", dir))
-                       }
-                   }
-               }
-=======
                     public =
                         list(
                             verbose = NULL,
@@ -126,8 +81,6 @@ Satchel <- R6::R6Class("Satchel",
                                         }
                                     }
                                 }
->>>>>>> 8f3787de8952fff4b0249b64d40b9a520af2d9eb
-
                private$dir <<- dir
 
                # cache may not be created yet
@@ -138,136 +91,89 @@ Satchel <- R6::R6Class("Satchel",
 
                private$cache_location <<- cache_folder
 
-<<<<<<< HEAD
-               if (self$verbose) {
-                   message("global data dir located at: ", private$dir)
-                   message("cache location named: ", basename(private$cache_location))
-               }
-               if (self$track) {
-                   message("automatic gitignore management not yet implemented, sorry!")
-               }
-           },
-           save = function(data, data_name = NULL, metadata = TRUE) {
-               if (is.null(data_name)) {
-                   data_name <- deparse(substitute(data))
-               }
-               if (data_name %in% names(private$data)) {
-                   # don't re-cache if exact object has already been saved
-                   # for now error on side of memory conservation and
-                   if (pryr::address(data) == private$data[[data_name]]$mem_address) {
-                       return(TRUE)
-                   }
-               }
-               saveRDS(data, file.path(private$cache_location, paste0(data_name, ".rds")))
-               size_mb <- tryCatch({
-                   # try to use pryr if possible, however some types like ggplot
-                   # do not work so can fall back to object.size if this errors
-                   as.numeric(pryr::object_size(data))/1000000
-               },
-               error = function(e) {
-                   as.numeric(object.size(data))/1000000
-               })
-               info <- tibble::data_frame(
-                   name = data_name,
-                   classes = paste0(class(data), collapse = ", "),
-                   size_mb = size_mb,
-                   mem_address = pryr::address(data)
-               )
-               private$data[[data_name]] <<- info
-               if (metadata) {
-                   # don't need memory address as won't convey any additional information
-                   info$mem_address <- NULL
-                   data_classes <- c(
-                       "tbl_df",
-                       "data.frame",
-                       "matrix"
-                   )
-                   is_likely_data <- any(class(data) %in% data_classes) || is.vector(data)
-=======
-                                if (self$verbose) {
-                                    message("global data dir located at: ", private$dir)
-                                    message("cache location named: ", basename(private$cache_location))
-                                }
-                                if (self$track) {
-                                    message("automatic gitignore management not yet implemented, sorry!")
-                                }
-                            },
-                            save = function(data, data_name = NULL, metadata = TRUE) {
-                                if (is.null(data_name)) {
-                                    data_name <- deparse(substitute(data))
-                                }
-                                if (data_name %in% names(private$data)) {
-                                    # don't re-cache if exact object has already been saved
-                                    # for now error on side of memory conservation and
-                                    if (pryr::address(data) == private$data[[data_name]]$mem_address) {
-                                        return(TRUE)
-                                    }
-                                }
-                                saveRDS(data, file.path(private$cache_location, paste0(data_name, ".rds")))
-                                size_mb <- tryCatch({
-                                        # try to use pryr if possible, however some types like ggplot
-                                        # do not work so can fall back to object.size if this errors
-                                        as.numeric(pryr::object_size(data))/1000000
-                                    },
-                                    error = function(e) {
-                                        as.numeric(object.size(data))/1000000
-                                    })
-                                info <- tibble::data_frame(
-                                    name = data_name,
-                                    classes = paste0(class(data), collapse = ", "),
-                                    size_mb = size_mb,
-                                    mem_address = pryr::address(data),
-                                    type = "object"
-                                )
-                                private$data[[data_name]] <<- info
-                                if (metadata) {
-                                    # don't need memory address as won't convey any additional information
-                                    info$mem_address <- NULL
-                                    data_classes <- c(
-                                        "tbl_df",
-                                        "data.frame",
-                                        "matrix"
-                                    )
-                                    is_likely_data <- any(class(data) %in% data_classes) || is.vector(data)
->>>>>>> 8f3787de8952fff4b0249b64d40b9a520af2d9eb
+                if (self$verbose) {
+                    message("global data dir located at: ", private$dir)
+                    message("cache location named: ", basename(private$cache_location))
+                }
+                if (self$track) {
+                    message("automatic gitignore management not yet implemented, sorry!")
+                }
+            },
+            save = function(data, data_name = NULL, metadata = TRUE) {
+                if (is.null(data_name)) {
+                    data_name <- deparse(substitute(data))
+                }
+                if (data_name %in% names(private$data)) {
+                    # don't re-cache if exact object has already been saved
+                    # for now error on side of memory conservation and
+                    if (pryr::address(data) == private$data[[data_name]]$mem_address) {
+                        return(TRUE)
+                    }
+                }
+                saveRDS(data, file.path(private$cache_location, paste0(data_name, ".rds")))
+                size_mb <- tryCatch({
+                        # try to use pryr if possible, however some types like ggplot
+                        # do not work so can fall back to object.size if this errors
+                        as.numeric(pryr::object_size(data))/1000000
+                    },
+                    error = function(e) {
+                        as.numeric(object.size(data))/1000000
+                    })
+                info <- tibble::data_frame(
+                    name = data_name,
+                    classes = paste0(class(data), collapse = ", "),
+                    size_mb = size_mb,
+                    mem_address = pryr::address(data),
+                    type = "object"
+                )
+                private$data[[data_name]] <<- info
+                if (metadata) {
+                    # don't need memory address as won't convey any additional information
+                    info$mem_address <- NULL
+                    data_classes <- c(
+                        "tbl_df",
+                        "data.frame",
+                        "matrix"
+                    )
+                is_likely_data <- any(class(data) %in% data_classes) || is.vector(data)
 
-                   if (is_likely_data) {
-                       output <- tryCatch({
-                           jsonlite::toJSON(list("info" = info,
-                                                 "json_preview" = head(data),
-                                                 "r_preview" = serializeJSON(head(data)),
-                                                 "time" = Sys.time()),
-                                            pretty = T
-                           )
-                       }, error = function(e) {
-                           jsonlite::toJSON(list("info" = info,
-                                                 "json_preview" = e$message,
-                                                 "r_preview" = serializeJSON(e$message),
-                                                 "time" = Sys.time()),
-                                            pretty = T
-                           )
-                       })
-                   } else {
-                       output <- tryCatch({
-                           jsonlite::toJSON(list("info" = info,
-                                                 "json_preview" = "data type likely unsuitable for preview",
-                                                 "r_preview" = serializeJSON("data type likely unsuitable for preview"),
-                                                 "time" = Sys.time()),
-                                            pretty = T
-                           )
-                       }, error = function(e) {
-                           jsonlite::toJSON(list("info" = info,
-                                                 "json_preview" = e$message,
-                                                 "r_preview" = serializeJSON(e$message),
-                                                 "time" = Sys.time()),
-                                            pretty = T
-                           )
-                       })
-                   }
-                   writeLines(output,
-                              file.path(private$cache_location, paste0(data_name, "_meta.json"))
-                   )
+               if (is_likely_data) {
+                   output <- tryCatch({
+                       jsonlite::toJSON(list("info" = info,
+                                             "json_preview" = head(data),
+                                             "r_preview" = serializeJSON(head(data)),
+                                             "time" = Sys.time()),
+                                        pretty = T
+                       )
+                   }, error = function(e) {
+                       jsonlite::toJSON(list("info" = info,
+                                             "json_preview" = e$message,
+                                             "r_preview" = serializeJSON(e$message),
+                                             "time" = Sys.time()),
+                                        pretty = T
+                       )
+                   })
+               } else {
+                   output <- tryCatch({
+                       jsonlite::toJSON(list("info" = info,
+                                             "json_preview" = "data type likely unsuitable for preview",
+                                             "r_preview" = serializeJSON("data type likely unsuitable for preview"),
+                                             "time" = Sys.time()),
+                                        pretty = T
+                       )
+                   }, error = function(e) {
+                       jsonlite::toJSON(list("info" = info,
+                                             "json_preview" = e$message,
+                                             "r_preview" = serializeJSON(e$message),
+                                             "time" = Sys.time()),
+                                        pretty = T
+                       )
+                   })
                }
+               writeLines(output,
+                          file.path(private$cache_location, paste0(data_name, "_meta.json"))
+               )
+           }
 
            },
            use = function(data_name, from = NULL) {
