@@ -17,6 +17,7 @@ Imports:
     tibble,
     R6
 Suggests:
+    knitr,
     testthat
 License: MIT + file LICENSE
 VignetteBuilder: knitr
