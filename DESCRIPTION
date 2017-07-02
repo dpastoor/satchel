@@ -1,7 +1,7 @@
 Package: satchel
 Type: Package
 Title: carry around your data 
-Version: 0.0.4
+Version: 1.0.0
 RoxygenNote: 6.0.1
 Roxygen: list(markdown = TRUE)
 Authors@R: c(
@@ -11,6 +11,7 @@ Description: carry around your data to wherever it needs to go
 Depends:
     R (>= 3.2.2)
 Imports:
+    readr,
     dplyr,
     jsonlite,
     pryr,
