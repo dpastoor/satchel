@@ -139,7 +139,7 @@ Satchel <- R6::R6Class(
                                       "matrix")
                     is_likely_data <-
                         any(class(data) %in% data_classes) ||
-                        is.vector(data)
+                       (is.vector(data) && !is.list(data))
 
                     if (is_likely_data) {
                         output <- tryCatch({
@@ -251,7 +251,7 @@ Satchel <- R6::R6Class(
                                   "matrix")
                 is_likely_data <-
                     any(class(data) %in% data_classes) ||
-                    is.vector(data)
+                    (is.vector(data) && !is.list(data))
 
                 if (is_likely_data) {
                     output <- tryCatch({
@@ -342,7 +342,7 @@ Satchel <- R6::R6Class(
                                   "matrix")
                 is_likely_data <-
                     any(class(data) %in% data_classes) ||
-                    is.vector(data)
+                    (is.vector(data) && !is.list(data))
 
                 if (is_likely_data) {
                     output <- tryCatch({
