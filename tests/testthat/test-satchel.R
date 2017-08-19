@@ -31,4 +31,9 @@ describe("satchel basics", {
        expect_equal(satchel1$use("tiny_theoph"), tiny_theoph)
        expect_equal(satchel1$use("Theoph"), Theoph)
     })
+
+    satchel2 <- Satchel$new("sat2", tmpdir1)
+    it("can pick up from another satchel", {
+        expect_equal(satchel2$available(), list(sat2 = character(0), tmp = c("Theoph", "tiny_theoph")))
+    })
 })
