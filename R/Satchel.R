@@ -1,12 +1,23 @@
 #' Carry around your data
 #'
-#'@details
+#' @section Initialization:
+#'
+#' `satchel <- Satchel$new("<namespace>", "<path/to/satchel>")`
+#'
+#' * The namespace will be the name of the folder/namespace that will be used to store
+#' the data elements
+#' * the path must already exist, this is to protect random satchel directories from
+#' being created in the case that the wrong directory path is set
+#'
+#' @section Methods:
+#'
 #' methods:
 #'  * save(data, data_name) - save data
-#'  * use(data_name) - use data saved from a different location
+#'  * use(data_name, namespace) - use data saved from a different location
 #'  * report() - show information about all data saved in current session
 #'  * details() - list all data in the satchel cache directory
-#'  * peek(data_dir, data_name) - shows the (approximate) head of a dataset from the output metadata
+#'  * preview(data_name, namespace) - shows the (approximate) head of a dataset stored in the output metadata
+#'
 #' @examples \dontrun{
 #' # create a new satchel stored as namespace f1 in the dir data/derived
 #' satchel <- Satchel$new("f1", "../data/derived/satchel")
@@ -18,7 +29,7 @@
 #' satchel$save(Theoph, data_name = "another")
 #'
 #' # to see all objects saved during the session can check the report
-#' satchel$report(details = T)
+#' satchel$report()
 #'
 #' # can see data from any satchel dir by checking what is available
 #' satchel$available()
@@ -34,9 +45,8 @@
 #' }
 #' @importFrom R6 R6Class
 #' @importFrom jsonlite serializeJSON unserializeJSON toJSON fromJSON
+#' @docType class
 #' @name Satchel
-NULL
-
 #' @export
 Satchel <- R6::R6Class(
     "Satchel",
@@ -106,13 +116,6 @@ Satchel <- R6::R6Class(
                             metadata = TRUE) {
                 if (is.null(data_name)) {
                     data_name <- deparse(substitute(data))
-                }
-                if (data_name %in% names(private$data)) {
-                    # don't re-cache if exact object has already been saved
-                    # for now error on side of memory conservation and
-                    if (pryr::address(data) == private$data[[data_name]]$mem_address) {
-                        return(TRUE)
-                    }
                 }
                 save_rds(data, file.path(private$cache_location, paste0(data_name, ".rds")))
                 size_mb <- tryCatch({
@@ -192,7 +195,7 @@ Satchel <- R6::R6Class(
                 }
 
             },
-            use = function(data_name, from = NULL) {
+            use = function(data_name, namespace = NULL) {
                 if (self$refresh) {
                     self$available()
                 }
@@ -202,17 +205,17 @@ Satchel <- R6::R6Class(
                         suggest referring to datasets by name"
                     )
                 }
-                if (!is.null(from)) {
-                    # check if from exists as will error otherwise
-                    if (!from %in% names(private$references)) {
-                        stop("no `from` location detected in available data locations")
+                if (!is.null(namespace)) {
+                    # check if namespace exists as will error otherwise
+                    if (!namespace %in% names(private$references)) {
+                        stop("no `namespace` location detected in available data locations")
                     }
                 }
 
-                if (is.null(from)) {
+                if (is.null(namespace)) {
                     references <- private$references
                 } else {
-                    references <- private$references[[from]]
+                    references <- private$references[[namespace]]
                 }
 
                 all_objects <- lapply(references, function(.n) {
@@ -223,7 +226,7 @@ Satchel <- R6::R6Class(
                 if (!length(obj_matches)) {
                     stop("could not find any matching objects")
                 }
-                if (length(obj_matches) > 1 && is.null(from)) {
+                if (length(obj_matches) > 1 && is.null(namespace)) {
                     stop("multiple matches found, please specify where the data was specified as well")
                 }
                 data <- readRDS(unlist(references)[obj_matches])
@@ -262,8 +265,8 @@ Satchel <- R6::R6Class(
                 }
                 return(self$refresh)
             },
-            preview = function(data_name, from = NULL) {
-                ## this is currently copied and pasted from use() this should be refactored!
+            preview = function(data_name, namespace = NULL) {
+                ## this is currently copied and pasted namespace use() this should be refactored!
                 if (self$refresh) {
                     self$available()
                 }
@@ -273,17 +276,17 @@ Satchel <- R6::R6Class(
                         suggest referring to datasets by name"
                     )
                 }
-                if (!is.null(from)) {
-                    # check if from exists as will error otherwise
-                    if (!from %in% names(private$references)) {
-                        stop("no `from` location detected in available data locations")
+                if (!is.null(namespace)) {
+                    # check if namespace exists as will error otherwise
+                    if (!namespace %in% names(private$references)) {
+                        stop("no `namespace` location detected in available data locations")
                     }
                 }
 
-                if (is.null(from)) {
+                if (is.null(namespace)) {
                     references <- private$references
                 } else {
-                    references <- private$references[[from]]
+                    references <- private$references[[namespace]]
                 }
 
                 all_objects <- lapply(references, function(.n) {
@@ -294,7 +297,7 @@ Satchel <- R6::R6Class(
                 if (!length(obj_matches)) {
                     stop("could not find any matching objects")
                 }
-                if (length(obj_matches) > 1 && is.null(from)) {
+                if (length(obj_matches) > 1 && is.null(namespace)) {
                     stop("multiple matches found, please specify where the data was specified as well")
                 }
                 meta_data_file <-
