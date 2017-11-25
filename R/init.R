@@ -10,7 +10,8 @@ init_satchel_dir <- function(.dir = "data/derived/satchel") {
     if (!dir.exists(.dir)) {
         dir.create(.dir, recursive = TRUE)
         message("satchel directory created at ", normalizePath(.dir))
-    }
+    } else {
         message("satchel directory already detected at ", normalizePath(.dir))
+    }
     return(.dir)
 }
