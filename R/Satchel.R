@@ -118,7 +118,8 @@ Satchel <- R6::R6Class(
                 if (is.null(data_name)) {
                     data_name <- deparse(substitute(data))
                 }
-                save_rds(data, file.path(private$cache_location, paste0(data_name, ".rds")))
+                save_rds(data, file.path(private$cache_location,
+                                         paste0(data_name, ".rds")))
                 size_mb <- tryCatch({
                     # try to use pryr if possible, however some types like ggplot
                     # do not work so can fall back to object.size if this errors
@@ -135,7 +136,7 @@ Satchel <- R6::R6Class(
                 )
                 private$data[[data_name]] <<- info
                 if (metadata) {
-                    # don't need memory address as won't convey any additional information
+         # don't need memory address as won't convey any additional information
                     data_classes <- c("tbl_df",
                                       "data.frame",
                                       "matrix")
@@ -167,16 +168,15 @@ Satchel <- R6::R6Class(
                         })
                     } else {
                         output <- tryCatch({
-                            jsonlite::toJSON(
-                                list(
-                                    "info" = info,
-                                    "json_preview" = "data type likely unsuitable for preview",
-                                    "r_preview" = serializeJSON("data type likely unsuitable for preview"),
-                                    "time" = Sys.time()
-                                ),
-                                pretty = T
-                            )
-                        }, error = function(e) {
+        jsonlite::toJSON(
+            list(
+                "info" = info,
+                "json_preview" = "data type likely unsuitable for preview",
+                "r_preview" = serializeJSON("data type likely unsuitable for preview"),
+                "time" = Sys.time()
+            ),
+            pretty = T
+        )}, error = function(e) {
                             jsonlite::toJSON(
                                 list(
                                     "info" = info,
@@ -202,8 +202,9 @@ Satchel <- R6::R6Class(
                 }
                 if (is.numeric(data_name)) {
                     warning(
-                        "be careful referencing models by index as changes could result in subtle bugs,
-                        suggest referring to datasets by name"
+                        "be careful referencing models by index as",
+                        " changes could result in subtle bugs,",
+                        " suggest referring to datasets by name"
                     )
                 }
                 if (!is.null(namespace)) {
