@@ -14,3 +14,43 @@ library(magrittr)
 library(satchel)
 ```
 
+Satchels are specified to a particular root directory, conventionally called `satchel`.
+
+For a project, a directory can be initialized using
+`init_satchel_dir()` into data/derived/satchel (Default), or a custom
+directory can also be specified
+
+```{r}
+init_satchel_dir("satchel")
+```
+
+A satchel can be initialized, which will store data in a namespace,
+such that multiple satchels can be created to store objects with the 
+same name.
+
+```{r}
+satchel <- Satchel$new("example_namespace", "./satchel")
+```
+
+Objects are saved to satchel via `save()`
+```{r}
+small_theoph <- head(Theoph)
+satchel$save(small_theoph)
+```
+
+and queried via `available()`
+
+```{r}
+satchel$available()
+```
+
+```{r}
+new_theoph <- satchel$use("small_theoph")
+```
+
+```{r}
+all.equal(small_theoph, new_theoph)
+```
+
+
+
