@@ -11,7 +11,8 @@ describe("satchel basics", {
     on.exit(cleanup(), add = TRUE)
     dir.create(tmpdir1, recursive = TRUE)
     it("initialization works as expected", {
-        expect_error(Satchel$new("tmp", file.path(tmpdir1, "notexist")), "no directory detected at")
+        expect_error(Satchel$new("tmp", file.path(tmpdir1, "notexist")),
+                     "no directory detected at")
         expect_message(satchel1 <- Satchel$new("tmp", tmpdir1))
         expect_equal(satchel1$available(), list(tmp = character(0)))
     })
@@ -34,6 +35,8 @@ describe("satchel basics", {
 
     satchel2 <- Satchel$new("sat2", tmpdir1)
     it("can pick up from another satchel", {
-        expect_equal(satchel2$available(), list(sat2 = character(0), tmp = c("Theoph", "tiny_theoph")))
+        expect_equal(satchel2$available(),
+                     list(sat2 = character(0),
+                          tmp = c("Theoph", "tiny_theoph")))
     })
 })
