@@ -10,13 +10,14 @@ Authors@R: c(
 Description: Carry around your data to wherever it needs to go.
 Depends:
     R (>= 3.2.2)
-Imports:
+Imports: 
     readr,
     dplyr,
     jsonlite,
     pryr,
     tibble,
-    R6
+    R6,
+    debugme
 Suggests:
     knitr,
     testthat
