@@ -4,6 +4,7 @@
 #' methods:
 #'  * save(data, data_name) - save data
 #'  * use(data_name) - use data saved from a different location
+#'  * use_batch(data_names) - a vector of data objects to use
 #'  * report() - show information about all data saved in current session
 #'  * details() - list all data in the satchel cache directory
 #'  * peek(data_dir, data_name) - shows the (approximate) head of a dataset from the output metadata
@@ -114,7 +115,9 @@ Satchel <- R6::R6Class(
                         return(TRUE)
                     }
                 }
-                saveRDS(data, file.path(private$cache_location, paste0(data_name, ".rds")))
+                saveRDS(data, file.path(private$cache_location,
+                                        paste0(data_name, ".rds")),
+                        compress = FALSE)
                 size_mb <- tryCatch({
                     # try to use pryr if possible, however some types like ggplot
                     # do not work so can fall back to object.size if this errors
@@ -203,10 +206,11 @@ Satchel <- R6::R6Class(
                 if (is.null(data_name)) {
                     data_name <- tools::file_path_sans_ext(basename(path))
                 }
-                rds_name <-
-                    file.path(private$cache_location, paste0(data_name, ".rds"))
+                rds_name <- file.path(private$cache_location,
+                                      paste0(data_name, ".rds"))
                 meta_filepath <-
-                    file.path(private$cache_location, paste0(data_name, "_meta.json"))
+                    file.path(private$cache_location,
+                              paste0(data_name, "_meta.json"))
                 file_info <- file.info(fullpath)
 
                 if (file.exists(meta_filepath)) {
@@ -412,7 +416,16 @@ Satchel <- R6::R6Class(
                 }
                 data <- readRDS(unlist(references)[obj_matches])
                 return(data)
-                },
+            },
+            use_batch = function(data_names, from = NULL) {
+                if (self$refresh) {
+                    self$available()
+                    self$refresh <- FALSE
+                    on.exit(self$refresh <- TRUE, add = TRUE)
+                }
+                results <- lapply(data_names, self$use, from)
+                return(results)
+            },
             report = function(details = TRUE) {
                 if (details) {
                     lapply(private$data, dplyr::glimpse)
