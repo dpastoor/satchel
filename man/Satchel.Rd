@@ -11,6 +11,7 @@ methods:
 \itemize{
 \item save(data, data_name) - save data
 \item use(data_name) - use data saved from a different location
+\item use_batch(data_names) - a vector of data objects to use
 \item report() - show information about all data saved in current session
 \item details() - list all data in the satchel cache directory
 \item peek(data_dir, data_name) - shows the (approximate) head of a dataset from the output metadata
@@ -39,5 +40,7 @@ nca_summaries <- satchel$use("nca_summaries")
 
 # if it finds a conflict, you must explicitly specify which namespace it was saved under
 nca_summaries <- satchel$use("nca_summaries", "nca_analysis")
+
+
 }
 }
