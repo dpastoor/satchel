@@ -17,9 +17,11 @@ Imports:
     pryr,
     tibble,
     R6,
-    debugme
-Suggests:
+    debugme,
+    magrittr
+Suggests: 
     knitr,
-    testthat
+    testthat,
+    rmarkdown
 License: MIT + file LICENSE
 VignetteBuilder: knitr
