@@ -1,13 +1,13 @@
 Package: satchel
 Type: Package
 Title: carry around your data 
-Version: 1.0.0
+Version: 1.0.0.9000
 RoxygenNote: 6.0.1
 Roxygen: list(markdown = TRUE)
 Authors@R: c(
     person("Devin", "Pastoor", ,"devin.pastoor@gmail.com", role = c("aut", "cre"))
     )
-Description: carry around your data to wherever it needs to go
+Description: Carry around your data to wherever it needs to go.
 Depends:
     R (>= 3.2.2)
 Imports:
