@@ -1,5 +1,7 @@
-Satchel
-===========
+---
+title: "Satchel"
+output: github_document
+---
 
 [![Travis build status](https://travis-ci.org/dpastoor/satchel.svg?branch=master)](https://travis-ci.org/dpastoor/satchel)
  [![AppVeyor Build Status](https://ci.appveyor.com/api/projects/status/github/dpastoor/satchel?branch=master&svg=true)](https://ci.appveyor.com/project/dpastoor/satchel)
@@ -52,7 +54,8 @@ satchel <- Satchel$new("<namespace>", "<path/to/satchel/tree>")
 
 
 The resulting object can have any name, though the convention is to use `satchel` 
-if only creating one, and `satchel_<additional_identifier>` if using multiple in a single file
+if only creating one, and `satchel_<additional_identifier>` if using multiple in a single file,
+or if multiple Rmd's are commonly used within the same session.
 
 ```{r eval = F}
 other_name <- Satchel$new("<namespace>", "<path/to/satchel/tree>")
@@ -176,7 +179,7 @@ you can turn off refreshing via `satchel$auto_refresh(FALSE)`
 
 The overall, optimized flow might be something like:
 
-```
+```{r eval=FALSE}
 satchel$auto_refresh(FALSE) 
 satchel$available() # manually query the tree to update it
 satchel$use(...)

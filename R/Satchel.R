@@ -207,11 +207,17 @@ Satchel <- R6::R6Class(
                         " suggest referring to datasets by name"
                     )
                 }
+
                 if (!is.null(namespace)) {
                     # check if namespace exists as will error otherwise
                     if (!namespace %in% names(private$references)) {
                         stop("no `namespace` location detected in available data locations")
                     }
+                } else {
+                    # the point of this message is to make this potentially annoying enough
+                    # that people can use it, especially quickly, but should
+                    # know that its better to be explicit
+                    message("no namespace specified, attempting to find the object by name only")
                 }
 
                 if (is.null(namespace)) {
@@ -245,7 +251,7 @@ Satchel <- R6::R6Class(
             },
             report = function(details = TRUE) {
                 if (details) {
-                    lapply(private$data, dplyr::glimpse)
+                    lapply(private$data, tibble::glimpse)
                 } else {
                     lapply(names(private$data), print)
                 }
