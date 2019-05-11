@@ -21,6 +21,7 @@ Imports:
 Suggests: 
     knitr,
     testthat,
-    rmarkdown
+    rmarkdown,
+    covr
 License: MIT + file LICENSE
 VignetteBuilder: knitr
