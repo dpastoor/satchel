@@ -7,3 +7,6 @@
 assets
 docs
 
+^_pkgdown\.yml$
+^docs$
+^pkgdown$
