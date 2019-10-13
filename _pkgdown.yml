@@ -1,1 +1,10 @@
 url: https://metrumresearchgroup.github.io/satchel
+title: satchel
+template:
+  params:
+    bootswatch: flatly
+navbar:
+  type: inverse
+  right:
+  - icon: fa-github fa-lg
+    href: https://github.com/metrumresearchgroup/satchel
